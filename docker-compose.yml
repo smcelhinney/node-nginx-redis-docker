@@ -1,0 +1,26 @@
+web:
+  environment:
+    - PORT=3000
+  build: ./app
+  volumes:
+    - "./app:/src/app"
+  ports:
+    - "3030:3000"
+  links:
+    - "db:redis"
+  command: npm start
+
+nginx:
+  restart: always
+  build: ./nginx/
+  ports:
+    - "80:80"
+  volumes:
+    - /www/public
+  volumes_from:
+    - web
+  links:
+    - web:web
+
+db:
+  image: redis
